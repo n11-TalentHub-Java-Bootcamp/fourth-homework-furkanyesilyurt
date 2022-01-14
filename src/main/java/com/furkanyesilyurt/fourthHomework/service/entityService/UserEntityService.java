@@ -42,10 +42,10 @@ public class UserEntityService {
         return UserConverter.INSTANCE.convertUserToUserDto(user);
     }
 
-    public UserDTO save(UserRegisterDto userRegisterDto){
+    public UserRegisterDto save(UserRegisterDto userRegisterDto){
         User user = UserConverter.INSTANCE.convertUserRegisterDtoToUser(userRegisterDto);
         user = userDAO.save(user);
-        return UserConverter.INSTANCE.convertUserToUserDto(user);
+        return UserConverter.INSTANCE.convertUserToUserRegisterDto(user);
     }
 
     public void deleteById(Long id){
@@ -53,6 +53,22 @@ public class UserEntityService {
             throw new UserNotFoundException("The user with " + id + " id number is not found!");
         }
         userDAO.deleteById(id);
+    }
+
+    public UserDTO update(UserRegisterDto userRegisterDto, Long id){
+        var user = userDAO.findById(id).orElse(null);
+        if(user == null){
+            throw new UserNotFoundException("The user with " + id + " id number is not found!");
+        }
+        user.setFirstName(userRegisterDto.getFirstName());
+        user.setLastName(userRegisterDto.getLastName());
+        user.setEmail(userRegisterDto.getEmail());
+        user.setPhone(userRegisterDto.getPhone());
+        user.setBirthday(userRegisterDto.getBirthday());
+        user = userDAO.save(user);
+
+        var respUserDto = UserConverter.INSTANCE.convertUserToUserDto(user);
+        return respUserDto;
     }
 
 }

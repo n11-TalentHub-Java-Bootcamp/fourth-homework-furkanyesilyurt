@@ -1,0 +1,10 @@
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (1, 'Jemima', 'Boice', 'jboice0@issuu.com', '887-414-8696', '1/29/2021');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (2, 'Darcy', 'Clowney', 'dclowney1@blogtalkradio.com', '709-620-0015', '2/2/2021');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (3, 'Francoise', 'Isaacson', 'fisaacson2@edublogs.org', '520-843-9070', '5/9/2021');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (4, 'Constancia', 'Gianiello', 'cgianiello3@answers.com', '204-358-4395', '12/4/2021');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (5, 'Molli', 'Ramme', 'mramme4@ning.com', '846-119-3380', '1/13/2022');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (6, 'Corenda', 'Fuzzey', 'cfuzzey5@yandex.ru', '612-718-5794', '10/30/2021');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (7, 'Robinson', 'Marin', 'rmarin6@ameblo.jp', '652-911-2403', '3/26/2021');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (8, 'Sally', 'Baudi', 'sbaudi7@intel.com', '883-290-6656', '9/7/2021');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (9, 'Tristan', 'Dunnan', 'tdunnan8@php.net', '339-902-8084', '2/10/2021');
+insert into user_app (id, first_name, last_name, email, phone, birthday) values (10, 'Estelle', 'Danby', 'edanby9@admin.ch', '621-698-8555', '1/13/2022');

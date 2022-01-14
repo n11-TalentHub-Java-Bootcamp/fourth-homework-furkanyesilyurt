@@ -14,13 +14,13 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user-app")
+@Table(name = "user_app")
 public class User implements Serializable {
 
     @Id
     @SequenceGenerator(name = "generator", sequenceName = "ID_USER_SEQ")
     @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
+    @Column(name = "user_id",nullable = false)
     private Long id;
 
     @Column(name = "first_name")
