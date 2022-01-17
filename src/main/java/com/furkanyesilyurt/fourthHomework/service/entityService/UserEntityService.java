@@ -9,15 +9,18 @@ import com.furkanyesilyurt.fourthHomework.exception.userException.UserNotFoundEx
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserEntityService {
 
     private final UserDAO userDAO;
 
+    @Transactional
     public List<UserDTO> findAll(){
         List<User> users = userDAO.findAll();
         if(users.isEmpty()){
@@ -26,6 +29,7 @@ public class UserEntityService {
         return UserMapper.INSTANCE.convertAllUsersToUserDtos(users);
     }
 
+    @Transactional
     public UserDTO findById(Long id){
         Optional<User> optionalUser = userDAO.findById(id);
         if(optionalUser.isEmpty()){
@@ -34,6 +38,7 @@ public class UserEntityService {
         return UserMapper.INSTANCE.convertUserToUserDto(optionalUser.get());
     }
 
+    @Transactional
     public UserDTO findByFirstname(String firstName){
         User user = userDAO.findByFirstName(firstName);
         if(user == null){
@@ -42,12 +47,14 @@ public class UserEntityService {
         return UserMapper.INSTANCE.convertUserToUserDto(user);
     }
 
+    @Transactional
     public UserRegisterDto save(UserRegisterDto userRegisterDto){
         User user = UserMapper.INSTANCE.convertUserRegisterDtoToUser(userRegisterDto);
         user = userDAO.save(user);
         return UserMapper.INSTANCE.convertUserToUserRegisterDto(user);
     }
 
+    @Transactional
     public void deleteById(Long id){
         if (userDAO.findById(id).isEmpty()){
             throw new UserNotFoundException("The user with " + id + " id number is not found!");
@@ -55,6 +62,7 @@ public class UserEntityService {
         userDAO.deleteById(id);
     }
 
+    @Transactional
     public UserDTO update(UserRegisterDto userRegisterDto, Long id){
         var user = userDAO.findById(id).orElse(null);
         if(user == null){

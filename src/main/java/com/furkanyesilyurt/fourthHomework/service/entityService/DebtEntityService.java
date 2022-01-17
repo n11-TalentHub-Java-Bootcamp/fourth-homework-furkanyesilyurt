@@ -9,6 +9,7 @@ import com.furkanyesilyurt.fourthHomework.entity.Debt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,19 +19,25 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DebtEntityService {
 
     private final DebtDAO debtDAO;
+    private final DebtEntityService debtEntityService;
 
+    @Transactional
     public List<DebtDTO> findAll(){
         List<Debt> debts = debtDAO.findAll();
         List<DebtDTO> debtDTOS = new ArrayList<>();
+        Double delayDebt = 0.0;
         for(Debt debt : debts){
+//            delayDebt = debtEntityService.findDelayRaise(debt.getExpiryDate(),)
             debtDTOS.add(DebtMapper.INSTANCE.convertDebtToDebtDto(debt));
         }
         return debtDTOS;
     }
 
+    @Transactional
     public DebtDTO findById(Long id){
         Optional<Debt> optionalDebt = debtDAO.findById(id);
         Debt debt = null;
@@ -40,18 +47,21 @@ public class DebtEntityService {
         return DebtMapper.INSTANCE.convertDebtToDebtDto(debt);
     }
 
+    @Transactional
     public DebtRegistrationDTO saveDebt(DebtRegistrationDTO debtRegistrationDto){
         Debt debt = DebtMapper.INSTANCE.convertDebtRegistrationDtoToDebt(debtRegistrationDto);
         debt = debtDAO.save(debt);
         return DebtMapper.INSTANCE.convertDebtToDebtRegistrationDto(debt);
     }
 
+    @Transactional
     public DebtDelayRaiseDTO saveDelayRaise(DebtDelayRaiseDTO debtDelayRaiseDTO){
         Debt debt = DebtMapper.INSTANCE.convertDebtDelayRaiseDTOToDebt(debtDelayRaiseDTO);
         debt = debtDAO.save(debt);
         return DebtMapper.INSTANCE.convertDebtToDebtDelayRaiseDto(debt);
     }
 
+    @Transactional
     public List<DebtDTO> findByExpiryDateBetween(Date startDate, Date endDate){
         List<Debt> debts = debtDAO.findByExpiryDateBetween(startDate,endDate);
         List<DebtDTO> debtDTOS = new ArrayList<>();
@@ -61,6 +71,7 @@ public class DebtEntityService {
         return debtDTOS;
     }
 
+    @Transactional
     public List<DebtDTO> findDebtByUserId(Long userId){
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
         List<DebtDTO> debtDTOS = new ArrayList<>();
@@ -72,6 +83,7 @@ public class DebtEntityService {
         return debtDTOS;
     }
 
+    @Transactional
     public List<DebtDTO> findDelayDebtByUserId(Long userId){
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
         List<DebtDTO> debtDTOS = new ArrayList<>();
@@ -90,6 +102,7 @@ public class DebtEntityService {
         return debtDTOS;
     }
 
+    @Transactional
     public Double findTotalDebtByUserId(Long userId){
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
         Double totaldebt = 0.0;
@@ -101,6 +114,7 @@ public class DebtEntityService {
         return totaldebt;
     }
 
+    @Transactional
     public Double findDelayTotalDebtByUserId(Long userId){
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
 
@@ -137,6 +151,7 @@ public class DebtEntityService {
 
     }
 
+    @Transactional
     public Double findDelayRaise(Date expiryDate, Date now, Double mainDebt ){
         long difference  = now.getTime() - expiryDate.getTime();
         long daysBetween = (difference / (1000*60*60*24));
@@ -152,6 +167,7 @@ public class DebtEntityService {
         }
     }
 
+
     public static Date parseDate(String date) {
         try {
             return new SimpleDateFormat("yyyy-MM-dd").parse(date);
@@ -160,6 +176,7 @@ public class DebtEntityService {
         }
     }
 
+    @Transactional
     public Double findDelayRaiseByDebtId(Long id){
         Optional<Debt> optionalDebt = debtDAO.findById(id);
         Debt debt = null;
@@ -181,8 +198,17 @@ public class DebtEntityService {
         return totaldelaydebt;
     }
 
+    @Transactional
     public void updateDebtInfo(Long id, Double remainingDebt){
         debtDAO.updateDebtInfo(id, remainingDebt);
+    }
+
+    public Date convertNowDate(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String date = sdf.format(new Date());
+        LocalDate dated = LocalDate.parse(date);
+        Date convertedDate = java.sql.Date.valueOf(dated);
+        return convertedDate;
     }
 
 }

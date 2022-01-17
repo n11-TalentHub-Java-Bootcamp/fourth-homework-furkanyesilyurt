@@ -13,17 +13,20 @@ import com.furkanyesilyurt.fourthHomework.enums.DebtType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PaymentEntityService {
 
     private final PaymentDAO paymentDAO;
     private final DebtEntityService debtEntityService;
 
+    @Transactional
     public List<PaymentDTO> findAll() {
         List<Payment> payments = paymentDAO.findAll();
         List<PaymentDTO> paymentDTOS = new ArrayList<>();
@@ -33,6 +36,7 @@ public class PaymentEntityService {
         return paymentDTOS;
     }
 
+    @Transactional
     public PaymentRecordDTO save(PaymentRecordDTO paymentRecordDTO) {
 
         //tahsilat yapılması istenen debt id
@@ -59,6 +63,7 @@ public class PaymentEntityService {
         return PaymentMapper.INSTANCE.convertPaymentToPaymentRecordDto(payment);
     }
 
+    @Transactional
     public List<PaymentDTO> findByPaymentDateBetween(Date startDate, Date endDate) {
         List<Payment> payments = paymentDAO.findByPaymentDateBetween(startDate, endDate);
         List<PaymentDTO> paymentDTOS = new ArrayList<>();
@@ -68,6 +73,7 @@ public class PaymentEntityService {
         return paymentDTOS;
     }
 
+    @Transactional
     public List<PaymentDTO> findPaymentByUserId(Long userId){
         List<Payment> payments = paymentDAO.findPaymentByUserId(userId);
         List<PaymentDTO> paymentDTOS = new ArrayList<>();
