@@ -15,4 +15,6 @@ public class DebtDTO {
     private Date expiryDate;
     private DebtType debtType;
     private Long debt;
+    private Long delayDebt;
+
 }

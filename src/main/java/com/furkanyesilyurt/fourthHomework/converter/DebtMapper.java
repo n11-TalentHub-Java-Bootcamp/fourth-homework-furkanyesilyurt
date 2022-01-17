@@ -1,7 +1,8 @@
 package com.furkanyesilyurt.fourthHomework.converter;
 
 import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDTO;
-import com.furkanyesilyurt.fourthHomework.dto.debt.DebtRegistrationDto;
+import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDelayRaiseDTO;
+import com.furkanyesilyurt.fourthHomework.dto.debt.DebtRegistrationDTO;
 import com.furkanyesilyurt.fourthHomework.entity.Debt;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,11 +22,17 @@ public interface DebtMapper {
     DebtDTO convertDebtToDebtDto(Debt debt);
 
     @Mapping(source = "userId", target = "user.id")
-    Debt convertDebtRegistrationDtoToDebt(DebtRegistrationDto debtRegistrationDto);
+    Debt convertDebtRegistrationDtoToDebt(DebtRegistrationDTO debtRegistrationDto);
 
     @Mapping(source = "user.id", target = "userId")
-    DebtRegistrationDto convertDebtToDebtRegistrationDto(Debt debt);
+    DebtRegistrationDTO convertDebtToDebtRegistrationDto(Debt debt);
 
     @Mapping(source = "userId", target = "user.id")
     Debt convertDebtDTOToDebt(DebtDTO debtDTO);
+
+    @Mapping(source = "user.id", target = "userId")
+    DebtDelayRaiseDTO convertDebtToDebtDelayRaiseDto(Debt debt);
+
+    @Mapping(source = "userId", target = "user.id")
+    Debt convertDebtDelayRaiseDTOToDebt(DebtDelayRaiseDTO debtDelayRaiseDTO);
 }

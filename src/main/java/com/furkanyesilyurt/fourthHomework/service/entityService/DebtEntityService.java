@@ -3,18 +3,18 @@ package com.furkanyesilyurt.fourthHomework.service.entityService;
 import com.furkanyesilyurt.fourthHomework.converter.DebtMapper;
 import com.furkanyesilyurt.fourthHomework.dao.DebtDAO;
 import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDTO;
-import com.furkanyesilyurt.fourthHomework.dto.debt.DebtRegistrationDto;
+import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDelayRaiseDTO;
+import com.furkanyesilyurt.fourthHomework.dto.debt.DebtRegistrationDTO;
 import com.furkanyesilyurt.fourthHomework.entity.Debt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +31,25 @@ public class DebtEntityService {
         return debtDTOS;
     }
 
-    public DebtRegistrationDto saveDebt(DebtRegistrationDto debtRegistrationDto){
+    public DebtDTO findById(Long id){
+        Optional<Debt> optionalDebt = debtDAO.findById(id);
+        Debt debt = null;
+        if(optionalDebt.isPresent()){
+            debt = optionalDebt.get();
+        }
+        return DebtMapper.INSTANCE.convertDebtToDebtDto(debt);
+    }
+
+    public DebtRegistrationDTO saveDebt(DebtRegistrationDTO debtRegistrationDto){
         Debt debt = DebtMapper.INSTANCE.convertDebtRegistrationDtoToDebt(debtRegistrationDto);
         debt = debtDAO.save(debt);
         return DebtMapper.INSTANCE.convertDebtToDebtRegistrationDto(debt);
+    }
+
+    public DebtDelayRaiseDTO saveDelayRaise(DebtDelayRaiseDTO debtDelayRaiseDTO){
+        Debt debt = DebtMapper.INSTANCE.convertDebtDelayRaiseDTOToDebt(debtDelayRaiseDTO);
+        debt = debtDAO.save(debt);
+        return DebtMapper.INSTANCE.convertDebtToDebtDelayRaiseDto(debt);
     }
 
     public List<DebtDTO> findByExpiryDateBetween(Date startDate, Date endDate){
@@ -143,6 +158,31 @@ public class DebtEntityService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public Double findDelayRaiseByDebtId(Long id){
+        Optional<Debt> optionalDebt = debtDAO.findById(id);
+        Debt debt = null;
+        if(optionalDebt.isPresent()){
+            debt = optionalDebt.get();
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String date = sdf.format(new Date());
+        LocalDate dated = LocalDate.parse(date);
+        Date convertedDate = java.sql.Date.valueOf(dated);
+
+        Double totaldelaydebt = 0.0;
+        if(debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate)) {
+            totaldelaydebt = findDelayRaise(debt.getExpiryDate(),convertedDate, debt.getMainDebt());
+        }
+        totaldelaydebt = Double.valueOf(Math.round(totaldelaydebt));
+
+        return totaldelaydebt;
+    }
+
+    public void updateDebtInfo(Long id, Double remainingDebt){
+        debtDAO.updateDebtInfo(id, remainingDebt);
     }
 
 }

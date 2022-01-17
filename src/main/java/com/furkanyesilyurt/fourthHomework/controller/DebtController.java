@@ -1,7 +1,7 @@
 package com.furkanyesilyurt.fourthHomework.controller;
 
 import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDTO;
-import com.furkanyesilyurt.fourthHomework.dto.debt.DebtRegistrationDto;
+import com.furkanyesilyurt.fourthHomework.dto.debt.DebtRegistrationDTO;
 import com.furkanyesilyurt.fourthHomework.service.entityService.DebtEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,8 +26,14 @@ public class DebtController {
         return new ResponseEntity<>(debtDtos, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/debtId", method = RequestMethod.GET)
+    public ResponseEntity<DebtDTO> findById(@RequestParam Long id){
+        var debtDto = debtEntityService.findById(id);
+        return new ResponseEntity<>(debtDto, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<DebtRegistrationDto> saveDebt(@RequestBody DebtRegistrationDto debtRegistrationDto){
+    public ResponseEntity<DebtRegistrationDTO> saveDebt(@RequestBody DebtRegistrationDTO debtRegistrationDto){
         var respdebtRegistrationDto = debtEntityService.saveDebt(debtRegistrationDto);
         return new ResponseEntity<>(respdebtRegistrationDto, HttpStatus.CREATED);
     }
@@ -48,7 +54,7 @@ public class DebtController {
     }
 
     @RequestMapping(value = "/userId/expirydate", method = RequestMethod.GET)
-    public ResponseEntity<List<DebtDTO>> findDelayDebtByUserId(@RequestParam Long userId) throws ParseException {
+    public ResponseEntity<List<DebtDTO>> findDelayDebtByUserId(@RequestParam Long userId) {
         var debDtos = debtEntityService.findDelayDebtByUserId(userId);
         return new ResponseEntity<>(debDtos, HttpStatus.OK);
     }
