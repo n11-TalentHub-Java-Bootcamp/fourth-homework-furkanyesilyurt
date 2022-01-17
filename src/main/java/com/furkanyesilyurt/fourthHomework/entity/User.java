@@ -21,7 +21,7 @@ public class User implements Serializable {
     @SequenceGenerator(name = "generator", sequenceName = "ID_USER_SEQ")
     @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
     @Column(name = "user_id",nullable = false)
-    private Long user_id;
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -40,7 +40,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return user_id == null ? "" : user_id.toString();
+        return id == null ? "" : id.toString();
     }
 
 }

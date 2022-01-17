@@ -1,16 +1,14 @@
 package com.furkanyesilyurt.fourthHomework.service.entityService;
 
-import com.furkanyesilyurt.fourthHomework.converter.DebtConverter;
+import com.furkanyesilyurt.fourthHomework.converter.DebtMapper;
 import com.furkanyesilyurt.fourthHomework.dao.DebtDAO;
 import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDTO;
-import com.furkanyesilyurt.fourthHomework.dto.debt.DebtExpiryDateDTO;
 import com.furkanyesilyurt.fourthHomework.dto.debt.DebtRegistrationDto;
 import com.furkanyesilyurt.fourthHomework.entity.Debt;
-import com.furkanyesilyurt.fourthHomework.exception.debtException.DebtNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,23 +20,37 @@ public class DebtEntityService {
 
     public List<DebtDTO> findAll(){
         List<Debt> debts = debtDAO.findAll();
-        if(debts.isEmpty()){
-            throw new DebtNotFoundException("No debts found!");
+        List<DebtDTO> debtDTOS = new ArrayList<>();
+        for(Debt debt : debts){
+            debtDTOS.add(DebtMapper.INSTANCE.convertDebtToDebtDto(debt));
         }
-        return DebtConverter.INSTANCE.convertAllDebtsToDebtDtos(debts);
+        return debtDTOS;
     }
 
     public DebtRegistrationDto saveDebt(DebtRegistrationDto debtRegistrationDto){
-        System.out.println("Entity "+debtRegistrationDto);
-        var debt = DebtConverter.INSTANCE.convertDebtRegistrationDtoToDebt(debtRegistrationDto);
+        Debt debt = DebtMapper.INSTANCE.convertDebtRegistrationDtoToDebt(debtRegistrationDto);
         debt = debtDAO.save(debt);
-        var respdebtRegistrationDto = DebtConverter.INSTANCE.convertDebtToDebtRegistrationDto(debt);
-        return respdebtRegistrationDto;
+        return DebtMapper.INSTANCE.convertDebtToDebtRegistrationDto(debt);
     }
 
     public List<DebtDTO> findByExpiryDateBetween(Date startDate, Date endDate){
         List<Debt> debts = debtDAO.findByExpiryDateBetween(startDate,endDate);
-        return DebtConverter.INSTANCE.convertAllDebtsToDebtDtos(debts);
+        List<DebtDTO> debtDTOS = new ArrayList<>();
+        for(Debt debt : debts){
+            debtDTOS.add(DebtMapper.INSTANCE.convertDebtToDebtDto(debt));
+        }
+        return debtDTOS;
+    }
+
+    public List<DebtDTO> findDebtByUserId(Long userId){
+        List<Debt> debts = debtDAO.findDebtByUserId(userId);
+        List<DebtDTO> debtDTOS = new ArrayList<>();
+        for(Debt debt : debts){
+            if(debt.getRemainingDebt() != 0) {
+                debtDTOS.add(DebtMapper.INSTANCE.convertDebtToDebtDto(debt));
+            }
+        }
+        return debtDTOS;
     }
 
 }

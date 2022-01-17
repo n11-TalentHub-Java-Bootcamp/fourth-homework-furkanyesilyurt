@@ -1,5 +1,6 @@
 package com.furkanyesilyurt.fourthHomework.dao;
 
+import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDTO;
 import com.furkanyesilyurt.fourthHomework.dto.debt.DebtExpiryDateDTO;
 import com.furkanyesilyurt.fourthHomework.entity.Debt;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,8 @@ import java.util.List;
 public interface DebtDAO extends JpaRepository<Debt, Long> {
 
     List<Debt> findByExpiryDateBetween(Date startDate, Date endDate);
+
+    List<Debt> findDebtByUserId(Long userId);
 
 }
 
