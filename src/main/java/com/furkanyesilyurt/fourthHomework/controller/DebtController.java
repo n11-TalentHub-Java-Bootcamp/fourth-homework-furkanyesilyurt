@@ -47,4 +47,28 @@ public class DebtController {
         return new ResponseEntity<>(debtDtos, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/userId/expirydate", method = RequestMethod.GET)
+    public ResponseEntity<List<DebtDTO>> findDelayDebtByUserId(@RequestParam Long userId) throws ParseException {
+        var debDtos = debtEntityService.findDelayDebtByUserId(userId);
+        return new ResponseEntity<>(debDtos, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/totalDebt",method = RequestMethod.GET)
+    public ResponseEntity<Double> findTotalDebtByUserId(@RequestParam Long userId){
+        var totalDebt = debtEntityService.findTotalDebtByUserId(userId);
+        return new ResponseEntity<>(totalDebt, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/totalDebt/expirtdate", method = RequestMethod.GET)
+    public ResponseEntity<Double> findDelayTotalDebtByUserId(@RequestParam Long userId){
+        var totalDebt = debtEntityService.findDelayTotalDebtByUserId(userId);
+        return new ResponseEntity<>(totalDebt, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delaydebt", method = RequestMethod.GET)
+    public ResponseEntity<Double> findDelayRaiseByUserId(@RequestParam Long userId){
+        var totalDebt = debtEntityService.findDelayRaiseByUserId(userId);
+        return new ResponseEntity<>(totalDebt, HttpStatus.OK);
+    }
+
 }
