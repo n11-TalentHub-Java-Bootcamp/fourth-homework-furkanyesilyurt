@@ -41,6 +41,9 @@ public class Debt implements Serializable {
     @Column(name = "debtType")
     private DebtType debtType;
 
+    @Column(name = "debt") //for delay debt
+    private Long debt;
+
     //, columnDefinition = "character varying (255)"
 
     public Debt() {

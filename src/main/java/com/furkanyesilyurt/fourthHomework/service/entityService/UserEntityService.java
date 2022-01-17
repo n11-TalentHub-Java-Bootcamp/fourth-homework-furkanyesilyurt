@@ -1,6 +1,6 @@
 package com.furkanyesilyurt.fourthHomework.service.entityService;
 
-import com.furkanyesilyurt.fourthHomework.converter.UserConverter;
+import com.furkanyesilyurt.fourthHomework.converter.UserMapper;
 import com.furkanyesilyurt.fourthHomework.dao.UserDAO;
 import com.furkanyesilyurt.fourthHomework.dto.user.UserDTO;
 import com.furkanyesilyurt.fourthHomework.dto.user.UserRegisterDto;
@@ -23,7 +23,7 @@ public class UserEntityService {
         if(users.isEmpty()){
             throw new UserNotFoundException("No users found!");
         }
-        return UserConverter.INSTANCE.convertAllUsersToUserDtos(users);
+        return UserMapper.INSTANCE.convertAllUsersToUserDtos(users);
     }
 
     public UserDTO findById(Long id){
@@ -31,7 +31,7 @@ public class UserEntityService {
         if(optionalUser.isEmpty()){
             throw new UserNotFoundException("The user with " + id + " id number is not found!");
         }
-        return UserConverter.INSTANCE.convertUserToUserDto(optionalUser.get());
+        return UserMapper.INSTANCE.convertUserToUserDto(optionalUser.get());
     }
 
     public UserDTO findByFirstname(String firstName){
@@ -39,13 +39,13 @@ public class UserEntityService {
         if(user == null){
             throw new UserNotFoundException("The user named " + firstName + " has not been found!");
         }
-        return UserConverter.INSTANCE.convertUserToUserDto(user);
+        return UserMapper.INSTANCE.convertUserToUserDto(user);
     }
 
     public UserRegisterDto save(UserRegisterDto userRegisterDto){
-        User user = UserConverter.INSTANCE.convertUserRegisterDtoToUser(userRegisterDto);
+        User user = UserMapper.INSTANCE.convertUserRegisterDtoToUser(userRegisterDto);
         user = userDAO.save(user);
-        return UserConverter.INSTANCE.convertUserToUserRegisterDto(user);
+        return UserMapper.INSTANCE.convertUserToUserRegisterDto(user);
     }
 
     public void deleteById(Long id){
@@ -67,7 +67,7 @@ public class UserEntityService {
         user.setBirthday(userRegisterDto.getBirthday());
         user = userDAO.save(user);
 
-        var respUserDto = UserConverter.INSTANCE.convertUserToUserDto(user);
+        var respUserDto = UserMapper.INSTANCE.convertUserToUserDto(user);
         return respUserDto;
     }
 

@@ -14,5 +14,5 @@ public class DebtDTO {
     private Double remainingDebt;
     private Date expiryDate;
     private DebtType debtType;
-
+    private Long debt;
 }
