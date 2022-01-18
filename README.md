@@ -61,15 +61,20 @@ ___________________________________________________________________
 
 [PaymentController](https://github.com/n11-TalentHub-Java-Bootcamp/fourth-homework-furkanyesilyurt/blob/b492acb2d67fe2991246c3adf3719e9ed9d749b3/src/main/java/com/furkanyesilyurt/fourthHomework/controller/PaymentController.java)
 
-| Method | URI                         | Request Body                                                 | Description                    |
-| ------ | --------------------------- | ------------------------------------------------------------ | ------------------------------ |
-| GET    | /api/v1/payments            |                                                              | Gel all payments               |
-| POST   | /api/v1/payments            | {  "debtId": 1,<br/>  "paymentDate": "2022-01-18T18:57:56.876Z",<br/>  "userId": 1} | Save a payment                 |
-| GET    | /api/v1/payments/expirydate |                                                              | Get payments between two dates |
-| GET    | /api/v1/payments/userId     |                                                              | Get a payment using user id    |
-| DELETE | /api/v1/payments            |                                                              | Delete a payment               |
-| PUT    | /api/v1/payments            | {"debtId": 1,<br/>  "paymentDate": "2022-01-18T18:57:56.876Z", <br/>  "userId": 1} | Update a payment               |
+| Method | URI                         | Request Body                                                 | Description                              |
+| ------ | --------------------------- | ------------------------------------------------------------ | ---------------------------------------- |
+| GET    | /api/v1/payments            |                                                              | Gel all payments                         |
+| POST   | /api/v1/payments            | {  "debtId": 1,<br/>  "paymentDate": "2022-01-18T18:57:56.876Z",<br/>  "userId": 1} | Save a payment                           |
+| GET    | /api/v1/payments/expirydate |                                                              | Get payments between two dates           |
+| GET    | /api/v1/payments/userId     |                                                              | Get a payment using user id              |
+| DELETE | /api/v1/payments            |                                                              | Delete a payment                         |
+| PUT    | /api/v1/payments            | {"debtId": 1,<br/>  "paymentDate": "2022-01-18T18:57:56.876Z", <br/>  "userId": 1} | Update a payment                         |
+| GET    | /api/v1/payments/delayDebt  |                                                              | Get total paid delay debts using user id |
 
+
+### Swagger Api-Doc
+
+[Api-docs.json](https://github.com/n11-TalentHub-Java-Bootcamp/fourth-homework-furkanyesilyurt/blob/5607d29ff0bd34510b688285d20cae93dc89fa36/src/main/resources/api-docs.json)
 ___________________________________________________________________
 ### References
 * [https://blog.fireheart.in/a?ID=00950-af381d8b-ebcd-4370-b163-8727ed608e75](https://blog.fireheart.in/a?ID=00950-af381d8b-ebcd-4370-b163-8727ed608e75)
