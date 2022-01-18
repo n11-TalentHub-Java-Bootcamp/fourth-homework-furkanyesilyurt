@@ -48,4 +48,15 @@ public class PaymentController {
         return new ResponseEntity<>(paymentDtos, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public void deleteById(@RequestParam Long id){
+        paymentEntityService.deleteById(id);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    public ResponseEntity<PaymentDTO> update(@RequestBody PaymentRecordDTO paymentRecordDTO, @RequestParam Long id){
+        var paymentDto = paymentEntityService.update(paymentRecordDTO, id);
+        return new ResponseEntity<>(paymentDto, HttpStatus.OK);
+    }
+
 }

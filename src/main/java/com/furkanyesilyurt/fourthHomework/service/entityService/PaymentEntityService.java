@@ -5,11 +5,16 @@ import com.furkanyesilyurt.fourthHomework.converter.PaymentMapper;
 import com.furkanyesilyurt.fourthHomework.dao.PaymentDAO;
 import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDTO;
 import com.furkanyesilyurt.fourthHomework.dto.debt.DebtDelayRaiseDTO;
+import com.furkanyesilyurt.fourthHomework.dto.debt.DebtRegistrationDTO;
 import com.furkanyesilyurt.fourthHomework.dto.payment.PaymentDTO;
 import com.furkanyesilyurt.fourthHomework.dto.payment.PaymentRecordDTO;
 import com.furkanyesilyurt.fourthHomework.entity.Debt;
 import com.furkanyesilyurt.fourthHomework.entity.Payment;
+import com.furkanyesilyurt.fourthHomework.entity.User;
 import com.furkanyesilyurt.fourthHomework.enums.DebtType;
+import com.furkanyesilyurt.fourthHomework.exception.debtException.DebtCanNotBeSavedException;
+import com.furkanyesilyurt.fourthHomework.exception.debtException.DebtNotFoundException;
+import com.furkanyesilyurt.fourthHomework.exception.paymentException.PaymentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +34,9 @@ public class PaymentEntityService {
     @Transactional
     public List<PaymentDTO> findAll() {
         List<Payment> payments = paymentDAO.findAll();
+        if(payments.isEmpty()){
+            throw new PaymentNotFoundException("There is no payment!");
+        }
         List<PaymentDTO> paymentDTOS = new ArrayList<>();
         for (Payment payment : payments) {
             paymentDTOS.add(PaymentMapper.INSTANCE.convertPaymentToPaymentDTO(payment));
@@ -41,6 +49,7 @@ public class PaymentEntityService {
 
         //tahsilat yapılması istenen debt id
         DebtDTO debtDTO = debtEntityService.findById(paymentRecordDTO.getDebtId());
+
 
         //ilgili borcun gecikme zammı
         Double delayDebt = debtEntityService.findDelayRaiseByDebtId(debtDTO.getDebt_id());
@@ -66,6 +75,9 @@ public class PaymentEntityService {
     @Transactional
     public List<PaymentDTO> findByPaymentDateBetween(Date startDate, Date endDate) {
         List<Payment> payments = paymentDAO.findByPaymentDateBetween(startDate, endDate);
+        if(payments.isEmpty()){
+            throw new PaymentNotFoundException("There is no payment between " + startDate + " and " + endDate);
+        }
         List<PaymentDTO> paymentDTOS = new ArrayList<>();
         for(Payment payment : payments){
             paymentDTOS.add(PaymentMapper.INSTANCE.convertPaymentToPaymentDTO(payment));
@@ -76,11 +88,37 @@ public class PaymentEntityService {
     @Transactional
     public List<PaymentDTO> findPaymentByUserId(Long userId){
         List<Payment> payments = paymentDAO.findPaymentByUserId(userId);
+        if(payments.isEmpty()){
+            throw new PaymentNotFoundException("There is no payment with " + userId + "user id");
+        }
         List<PaymentDTO> paymentDTOS = new ArrayList<>();
         for (Payment payment : payments) {
             paymentDTOS.add(PaymentMapper.INSTANCE.convertPaymentToPaymentDTO(payment));
         }
         return paymentDTOS;
+    }
+
+    @Transactional
+    public void deleteById(Long id){
+        paymentDAO.deleteById(id);
+    }
+
+    @Transactional
+    public PaymentDTO update(PaymentRecordDTO paymentRecordDTO, Long id){
+        var payment = paymentDAO.findById(id).orElse(null);
+        if (payment == null){
+            throw new PaymentNotFoundException("The payment with " + id + " id number is not found!");
+        }
+        Debt debt = new Debt();
+        payment.setPaymentDate(paymentRecordDTO.getPaymentDate());
+        payment.setUserId(paymentRecordDTO.getUserId());
+
+        debt.setDebt_id(paymentRecordDTO.getDebtId());
+        payment.setDebt(debt);
+        payment = paymentDAO.save(payment);
+
+        var respPaymentDto = PaymentMapper.INSTANCE.convertPaymentToPaymentDTO(payment);
+        return respPaymentDto;
     }
 
 }
