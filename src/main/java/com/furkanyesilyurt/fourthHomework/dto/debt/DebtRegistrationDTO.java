@@ -16,6 +16,6 @@ public class DebtRegistrationDTO {
     private Date expiryDate;
     private DebtType debtType = DebtType.NORMAL;
     private Long debt;
-    private Long delayDebt;
+//    private Double delayDebt;
 
 }

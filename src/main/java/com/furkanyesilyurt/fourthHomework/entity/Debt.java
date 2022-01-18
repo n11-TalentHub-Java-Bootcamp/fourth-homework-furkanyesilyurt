@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -30,9 +31,11 @@ public class Debt implements Serializable {
     private User user;
 
     @Column(name = "main_debt")
+    @Digits(integer = 10, fraction = 2)
     private Double mainDebt;
 
     @Column(name = "remaining_debt")
+    @Digits(integer = 10, fraction = 2)
     private Double remainingDebt;
 
     @Column(name = "expiry_date")
@@ -42,12 +45,13 @@ public class Debt implements Serializable {
     @Column(name = "debtType")
     private DebtType debtType;
 
-    @Column(name = "debt") //for delay debt
+    @Column(name = "debt") //for delay debt id
     private Long debt;
 
     @Transient
     @Column(name = "transient_delay_debt")
-    private Long delayDebt;
+    @Digits(integer = 10, fraction = 2)
+    private Double delayDebt;
 
     @Override
     public String toString() {

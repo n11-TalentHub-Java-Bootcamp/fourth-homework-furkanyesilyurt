@@ -14,6 +14,6 @@ public class DebtDelayRaiseDTO {
     private Date expiryDate;
     private DebtType debtType = DebtType.DELAY_RAISE;
     private Long debt;
-    private Long delayDebt;
+    private Double delayDebt;
 
 }

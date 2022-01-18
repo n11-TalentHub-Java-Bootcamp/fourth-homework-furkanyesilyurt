@@ -77,4 +77,15 @@ public class DebtController {
         return new ResponseEntity<>(totalDebt, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public void deleteById(@PathVariable Long id){
+        debtEntityService.deleteById(id);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    public ResponseEntity<DebtDTO> update(@RequestBody DebtRegistrationDTO debtRegistrationDTO, @PathVariable Long id){
+        var debtDto = debtEntityService.update(debtRegistrationDTO, id);
+        return new ResponseEntity<>(debtDto, HttpStatus.OK);
+    }
+
 }
