@@ -34,15 +34,14 @@ public class DebtEntityService {
     private final DebtDAO debtDAO;
 
     @Transactional
-    public List<DebtDTO> findAll(){
+    public List<DebtDTO> findAll() {
         List<Debt> debts = debtDAO.findAll();
-        if(debts.isEmpty()){
+        if (debts.isEmpty()) {
             throw new PaymentNotFoundException("There is no debt!");
         }
         List<DebtDTO> debtDTOS = new ArrayList<>();
-        for(Debt debt : debts){
-
-            if(debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0){
+        for (Debt debt : debts) {
+            if (debt.getExpiryDate().before(convertNowDate()) && debt.getExpiryDate() != null) {
                 debt.setDelayDebt(findDelayRaise(debt.getExpiryDate(), convertNowDate(), debt.getMainDebt()));
             }
 
@@ -52,12 +51,12 @@ public class DebtEntityService {
     }
 
     @Transactional
-    public DebtDTO findById(Long id){
+    public DebtDTO findById(Long id) {
         Optional<Debt> optionalDebt = debtDAO.findById(id);
         Debt debt = null;
-        if(optionalDebt.isPresent()){
+        if (optionalDebt.isPresent()) {
             debt = optionalDebt.get();
-            if(debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0){
+            if (debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0 && debt.getExpiryDate() != null) {
                 debt.setDelayDebt(findDelayRaise(debt.getExpiryDate(), convertNowDate(), debt.getMainDebt()));
             }
         } else {
@@ -67,25 +66,25 @@ public class DebtEntityService {
     }
 
     @Transactional
-    public DebtRegistrationDTO saveDebt(DebtRegistrationDTO debtRegistrationDto){
+    public DebtRegistrationDTO saveDebt(DebtRegistrationDTO debtRegistrationDto) {
         Debt debt = DebtMapper.INSTANCE.convertDebtRegistrationDtoToDebt(debtRegistrationDto);
         debt = debtDAO.save(debt);
         return DebtMapper.INSTANCE.convertDebtToDebtRegistrationDto(debt);
     }
 
     @Transactional
-    public DebtDelayRaiseDTO saveDelayRaise(DebtDelayRaiseDTO debtDelayRaiseDTO){
+    public DebtDelayRaiseDTO saveDelayRaise(DebtDelayRaiseDTO debtDelayRaiseDTO) {
         Debt debt = DebtMapper.INSTANCE.convertDebtDelayRaiseDTOToDebt(debtDelayRaiseDTO);
         debt = debtDAO.save(debt);
         return DebtMapper.INSTANCE.convertDebtToDebtDelayRaiseDto(debt);
     }
 
     @Transactional
-    public List<DebtDTO> findByExpiryDateBetween(Date startDate, Date endDate){
-        List<Debt> debts = debtDAO.findByExpiryDateBetween(startDate,endDate);
+    public List<DebtDTO> findByExpiryDateBetween(Date startDate, Date endDate) {
+        List<Debt> debts = debtDAO.findByExpiryDateBetween(startDate, endDate);
         List<DebtDTO> debtDTOS = new ArrayList<>();
-        for(Debt debt : debts){
-            if(debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0){
+        for (Debt debt : debts) {
+            if (debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0 && debt.getExpiryDate() != null) {
                 debt.setDelayDebt(findDelayRaise(debt.getExpiryDate(), convertNowDate(), debt.getMainDebt()));
             }
             debtDTOS.add(DebtMapper.INSTANCE.convertDebtToDebtDto(debt));
@@ -94,12 +93,12 @@ public class DebtEntityService {
     }
 
     @Transactional
-    public List<DebtDTO> findDebtByUserId(Long userId){
+    public List<DebtDTO> findDebtByUserId(Long userId) {
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
         List<DebtDTO> debtDTOS = new ArrayList<>();
-        for(Debt debt : debts){
-            if(debt.getRemainingDebt() != 0) {
-                if(debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0){
+        for (Debt debt : debts) {
+            if (debt.getRemainingDebt() != 0) {
+                if (debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0 && debt.getExpiryDate() != null) {
                     debt.setDelayDebt(findDelayRaise(debt.getExpiryDate(), convertNowDate(), debt.getMainDebt()));
                 }
                 debtDTOS.add(DebtMapper.INSTANCE.convertDebtToDebtDto(debt));
@@ -108,8 +107,22 @@ public class DebtEntityService {
         return debtDTOS;
     }
 
+    public List<DebtDTO> findAllDebtByUserId(Long userId) {
+        List<Debt> debts = debtDAO.findDebtByUserId(userId);
+        List<DebtDTO> debtDTOS = new ArrayList<>();
+        for (Debt debt : debts) {
+
+            if (debt.getExpiryDate().before(convertNowDate()) && debt.getExpiryDate() != null) {
+                debt.setDelayDebt(findDelayRaise(debt.getExpiryDate(), convertNowDate(), debt.getMainDebt()));
+            }
+            debtDTOS.add(DebtMapper.INSTANCE.convertDebtToDebtDto(debt));
+
+        }
+        return debtDTOS;
+    }
+
     @Transactional
-    public List<DebtDTO> findDelayDebtByUserId(Long userId){
+    public List<DebtDTO> findDelayDebtByUserId(Long userId) {
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
         List<DebtDTO> debtDTOS = new ArrayList<>();
 
@@ -118,9 +131,9 @@ public class DebtEntityService {
         LocalDate dated = LocalDate.parse(date);
         Date convertedDate = java.sql.Date.valueOf(dated);
 
-        for(Debt debt : debts){
-            if(debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate)) {
-                if(debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0){
+        for (Debt debt : debts) {
+            if (debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate)) {
+                if (debt.getExpiryDate().before(convertNowDate()) && debt.getRemainingDebt() > 0 && debt.getExpiryDate() != null) {
                     debt.setDelayDebt(findDelayRaise(debt.getExpiryDate(), convertNowDate(), debt.getMainDebt()));
                 }
                 debtDTOS.add(DebtMapper.INSTANCE.convertDebtToDebtDto(debt));
@@ -131,11 +144,11 @@ public class DebtEntityService {
     }
 
     @Transactional
-    public Double findTotalDebtByUserId(Long userId){
+    public Double findTotalDebtByUserId(Long userId) {
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
         Double totaldebt = 0.0;
-        for(Debt debt : debts){
-            if(debt.getRemainingDebt() != 0) {
+        for (Debt debt : debts) {
+            if (debt.getRemainingDebt() != 0) {
                 totaldebt += debt.getRemainingDebt();
             }
         }
@@ -143,7 +156,7 @@ public class DebtEntityService {
     }
 
     @Transactional
-    public Double findDelayTotalDebtByUserId(Long userId){
+    public Double findDelayTotalDebtByUserId(Long userId) {
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -152,15 +165,15 @@ public class DebtEntityService {
         Date convertedDate = java.sql.Date.valueOf(dated);
 
         Double totaldebt = 0.0;
-        for(Debt debt : debts){
-            if(debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate)) {
+        for (Debt debt : debts) {
+            if (debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate)) {
                 totaldebt += debt.getRemainingDebt();
             }
         }
         return totaldebt;
     }
 
-    public Double findDelayRaiseByUserId(Long userId){
+    public Double findDelayRaiseByUserId(Long userId) {
         List<Debt> debts = debtDAO.findDebtByUserId(userId);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -169,35 +182,35 @@ public class DebtEntityService {
         Date convertedDate = java.sql.Date.valueOf(dated);
 
         Double totaldelaydebt = 0.0;
-        for(Debt debt : debts){
-            if(debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate)) {
-                totaldelaydebt += findDelayRaise(debt.getExpiryDate(),convertedDate, debt.getMainDebt());
+        for (Debt debt : debts) {
+            if (debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate) && debt.getExpiryDate() != null) {
+                totaldelaydebt += findDelayRaise(debt.getExpiryDate(), convertedDate, debt.getMainDebt());
             }
         }
         totaldelaydebt = Double.valueOf(Math.round(totaldelaydebt));
-        if(totaldelaydebt < 1.0) totaldelaydebt = 1.0;
+        if (totaldelaydebt < 1.0) totaldelaydebt = 1.0;
         return totaldelaydebt;
 
     }
 
     @Transactional
-    public Double findDelayRaise(Date expiryDate, Date now, Double mainDebt ){
+    public Double findDelayRaise(Date expiryDate, Date now, Double mainDebt) {
 
-        long difference  = now.getTime() - expiryDate.getTime();
-        long daysBetween = (difference / (1000*60*60*24));
+        long difference = now.getTime() - expiryDate.getTime();
+        long daysBetween = (difference / (1000 * 60 * 60 * 24));
         Date myDate = parseDate("2018-01-01");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String date = sdf.format(myDate);
         LocalDate dated = LocalDate.parse(date);
         Date expiryLimit = java.sql.Date.valueOf(dated);
         Double totaldelaydebt = 0.0;
-        if(expiryDate.before(expiryLimit)){
-            totaldelaydebt = (mainDebt*2.0/100*daysBetween);
+        if (expiryDate.before(expiryLimit)) {
+            totaldelaydebt = (mainDebt * 2.0 / 100 * daysBetween);
         } else {
-            totaldelaydebt = (mainDebt*1.5/100*daysBetween);
+            totaldelaydebt = (mainDebt * 1.5 / 100 * daysBetween);
         }
         totaldelaydebt = Double.valueOf(Math.round(totaldelaydebt));
-        if(totaldelaydebt < 1.0) totaldelaydebt = 1.0;
+        if (totaldelaydebt < 1.0) totaldelaydebt = 1.0;
         return totaldelaydebt;
     }
 
@@ -211,20 +224,20 @@ public class DebtEntityService {
     }
 
     @Transactional
-    public void deleteById(Long debt_id){
-        if (debtDAO.findById(debt_id).isEmpty()){
+    public void deleteById(Long debt_id) {
+        if (debtDAO.findById(debt_id).isEmpty()) {
             throw new DebtNotFoundException("The debt with " + debt_id + " id number is not found!");
         }
         debtDAO.deleteById(debt_id);
     }
 
     @Transactional
-    public DebtDTO update(DebtRegistrationDTO debtRegistrationDTO, Long id){
+    public DebtDTO update(DebtRegistrationDTO debtRegistrationDTO, Long id) {
         var debt = debtDAO.findById(id).orElse(null);
-        if (debt == null){
+        if (debt == null) {
             throw new DebtNotFoundException("The debt with " + id + " id number is not found!");
         }
-        if(debt.getDebtType() == DebtType.NORMAL){
+        if (debt.getDebtType() == DebtType.NORMAL) {
             throw new DebtCanNotBeSavedException("This debt entry cannot be updated. Cause debt type is NORMAL. This debt is main debt");
         }
         User user = new User();
@@ -243,10 +256,10 @@ public class DebtEntityService {
     }
 
     @Transactional
-    public Double findDelayRaiseByDebtId(Long id){
+    public Double findDelayRaiseByDebtId(Long id) {
         Optional<Debt> optionalDebt = debtDAO.findById(id);
         Debt debt = null;
-        if(optionalDebt.isPresent()){
+        if (optionalDebt.isPresent()) {
             debt = optionalDebt.get();
         }
 
@@ -256,8 +269,8 @@ public class DebtEntityService {
         Date convertedDate = java.sql.Date.valueOf(dated);
 
         Double totaldelaydebt = 0.0;
-        if(debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate)) {
-            totaldelaydebt = findDelayRaise(debt.getExpiryDate(),convertedDate, debt.getMainDebt());
+        if (debt.getRemainingDebt() != 0 && debt.getExpiryDate().before(convertedDate)) {
+            totaldelaydebt = findDelayRaise(debt.getExpiryDate(), convertedDate, debt.getMainDebt());
         }
         totaldelaydebt = Double.valueOf(Math.round(totaldelaydebt));
 
@@ -265,11 +278,11 @@ public class DebtEntityService {
     }
 
     @Transactional
-    public void updateDebtInfo(Long id, Double remainingDebt){
+    public void updateDebtInfo(Long id, Double remainingDebt) {
         debtDAO.updateDebtInfo(id, remainingDebt);
     }
 
-    public Date convertNowDate(){
+    public Date convertNowDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String date = sdf.format(new Date());
         LocalDate dated = LocalDate.parse(date);

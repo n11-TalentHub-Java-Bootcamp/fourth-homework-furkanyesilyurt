@@ -121,4 +121,20 @@ public class PaymentEntityService {
         return respPaymentDto;
     }
 
+    @Transactional
+    public List<DebtDTO> findDelayDebtByUserId(Long userId){
+        var paymentList = paymentDAO.findPaymentByUserId(userId);
+        List<DebtDTO> debtDTOList = new ArrayList<>();
+        for (Payment payment : paymentList){
+            var debtList = debtEntityService.findAllDebtByUserId(payment.getUserId());
+            for (DebtDTO debtDTO : debtList){
+                if (debtDTO.getDebtType() == DebtType.DELAY_RAISE && debtDTO.getRemainingDebt() == 0){
+                    debtDTOList.add(debtDTO);
+                }
+            }
+        }
+        return debtDTOList;
+    }
+
+
 }

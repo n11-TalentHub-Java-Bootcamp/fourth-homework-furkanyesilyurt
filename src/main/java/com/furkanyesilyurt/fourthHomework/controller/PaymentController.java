@@ -59,4 +59,10 @@ public class PaymentController {
         return new ResponseEntity<>(paymentDto, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/delayDebt", method = RequestMethod.GET)
+    public ResponseEntity<List<DebtDTO>> findDelayDebtByUserId(@RequestParam Long userId){
+        var debtDtos = paymentEntityService.findDelayDebtByUserId(userId);
+        return new ResponseEntity<>(debtDtos, HttpStatus.OK);
+    }
+
 }
