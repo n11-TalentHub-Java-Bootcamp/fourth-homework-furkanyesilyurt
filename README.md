@@ -3,7 +3,7 @@ n11-TalentHub-Java-Bootcamp
 
 ### Project Description
 This project is a simulation of a small e-banking system. 
-
+___________________________________________________________________
 ### Project Structure
 * Entity
 * Dto
@@ -20,7 +20,7 @@ This project is a simulation of a small e-banking system.
   * EntityService
 * Converter
 * Controller
-
+___________________________________________________________________
 ### Built With
 * Java
 * Jpa
@@ -29,7 +29,7 @@ This project is a simulation of a small e-banking system.
 * MapStruct
 * Lombok
 * Swagger
-
+___________________________________________________________________
 ### Project End Points
 
 [UserController](https://github.com/n11-TalentHub-Java-Bootcamp/fourth-homework-furkanyesilyurt/blob/b492acb2d67fe2991246c3adf3719e9ed9d749b3/src/main/java/com/furkanyesilyurt/fourthHomework/controller/UserController.java)
@@ -70,7 +70,7 @@ This project is a simulation of a small e-banking system.
 | DELETE | /api/v1/payments            |                                                              | Delete a payment               |
 | PUT    | /api/v1/payments            | {"debtId": 1,<br/>  "paymentDate": "2022-01-18T18:57:56.876Z", <br/>  "userId": 1} | Update a payment               |
 
-
+___________________________________________________________________
 ### References
 * [https://blog.fireheart.in/a?ID=00950-af381d8b-ebcd-4370-b163-8727ed608e75](https://blog.fireheart.in/a?ID=00950-af381d8b-ebcd-4370-b163-8727ed608e75)
 
